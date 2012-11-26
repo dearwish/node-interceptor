@@ -2,13 +2,14 @@ Simple HTTP request mocking/interception for testing node.js modules that interf
 
 # Installation
 
-	git clone git://github.com/dearwish/node-interceptor.git
-	cd node-interceptor
-	npm install
+    npm install node-interceptor
 
 # Testing
 
-	npm test
+    git clone git://github.com/dearwish/node-interceptor.git
+    cd node-interceptor
+    npm install
+    npm test
 
 # Examples
 
@@ -21,7 +22,7 @@ Catch requests to test.com with uri "/foo":
     http.register_intercept({
         uri: '/foo', 
         host: 'test.com',
-        body: 'I'm the mocked-out body!'
+        body: 'I am the mocked-out body!'
     })
 
     http.request({uri: "/foo", host: "test.com"}, function(response){
@@ -33,7 +34,7 @@ HTTPS interceptors are registered in the same way:
     https.register_intercept({
         uri: '/foo', 
         host: 'test.com',
-        body: 'I'm the mocked-out body!'
+        body: 'I am the mocked-out body!'
     })
 
     https.request({uri: "/foo", host: "test.com"}, function(response){
@@ -50,7 +51,7 @@ You can also provide the list of headers to the interceptor and they will be dee
 	headers: {'Content-Type': 'application/json'},
 	uri: '/foo', 
         host: 'test.com',
-        body: 'I'm the mocked-out body!'
+        body: 'I am the mocked-out body!'
     })
 
     https.request({
@@ -76,13 +77,21 @@ Return custom HTTP headers to your response:
         uri: '/foo', 
         host: 'test.com',
         headers: {'Content-Type': 'application/json'},
-        body: 'I'm the mocked-out body!'
+        body: 'I am the mocked-out body!'
     })
 
 node-interceptor also provides a nodeunit test case that resets the uri intercept list in between tests. See ```tests/suits/testcase.js``` for an example.
 
-[1]: https://github.com/thegreatape/node-fakeweb
+# Future enhancements
+
+1. Add Connect-like url mapping (i.e. "/users/:id/edit").
+2. Add fixtures integration - the body messages will be read from .js or .json file that reside in app fixtures directory. Inspired by [ppcano's fixtures][2].
+3. Add dynamic fixtures similar to [jQuery.fixture][3].
 
 # License
 
 MIT
+
+[1]: https://github.com/thegreatape/node-fakeweb
+[2]: https://github.com/ppcano/fixtures
+[3]: http://javascriptmvc.com/docs.html#!jQuery.fixture

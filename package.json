@@ -1,5 +1,5 @@
 {
-  "name": "interceptor",
+  "name": "node-interceptor",
   "version": "0.0.1",
   "description": "HTTP & HTTPS request interceptor that allows to define which fixture to return, inspired by chrisk/fakeweb",
   "keywords": [
@@ -19,9 +19,8 @@
   "author": {
     "name" : "David Roberin",
     "email" : "davewish@gmail.com"
-  }
-  "readme": "Simple HTTP & HTTPS request interceptor that is useful for testing the Node.js modules that interface with internal and external web services. Inspired by [thegreatape's fakeweb][1].\n\n# Examples\n\nInterceptor wraps node's native http and https libraries, so it needs to be required before ```http``` and ```https```.\n\nCatch requests to test.com with uri \"/foo\":\n\n    var interceptor = require('interceptor'),\n        http = require('http')\n        https = require('https')\n    http.register_intercept({\n        uri: '/foo', \n        host: 'test.com',\n        body: 'I'm the mocked-out body!'\n    })\n    http.request({uri: \"/foo\", host: \"test.com\"}, function(response){\n        // ...\n    })\n\nYou can match request properties with regular expressions:\n\n    http.register_intercept({uri: /page\\d+/, body: 'intercepted body'})\n\nUnregister rules like so:\n\n    http.register_intercept({uri: '/page3', body: 'intercepted body'})\n    // ...\n    http.unregister_intercept({uri: '/page3', body: 'intercepted body'})\n\nClear the list of registered intercept rules:\n\n    http.clear_intercepts()\n\nReturn custom HTTP headers to your intercepted response:\n\n    http.register_intercept({\n        uri: '/foo', \n        host: 'test.com',\n        headers: {'Content-Type': 'application/json'},\n        body: 'I'm the mocked-out body!'\n    })\n\nnode-interceptor also provides a nodeunit test case that resets the uri intercept list in between tests. See ```tests/suits/testcase.js``` for an example.\n\n[1]: https://github.com/chrisk/fakeweb\n",
-  "_id": "interceptor@0.0.1",
+  },
+  "_id": "node-interceptor@0.0.1",
   "_from": "fakeweb"
 }
  
