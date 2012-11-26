@@ -6,13 +6,16 @@ Fakeweb works by wrapping node's native http lib, so it needs to be required bef
 
 Catch requests to test.com with uri "/foo":
 
-    var fakeweb = require('fakeweb'),
-        http = require('http')
+    var interceptor = require('interceptor'),
+        http = require('http'),
+        https = require('https');
+
     http.register_intercept({
         uri: '/foo', 
         host: 'test.com',
         body: 'I'm the mocked-out body!'
     })
+
     http.request({uri: "/foo", host: "test.com"}, function(response){
         // ...
     })
@@ -42,4 +45,8 @@ Return custom HTTP headers to your fake response:
 
 node-fakeweb also provides a nodeunit test case that resets the uri intercept list in between tests. See ```tests/suits/testcase.js``` for an example.
 
-[1]: https://github.com/chrisk/fakeweb
+[1]: https://github.com/thegreatape/node-fakeweb
+
+# License
+
+*MIT*
