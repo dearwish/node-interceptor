@@ -1,4 +1,4 @@
-Simple HTTP request mocking/interception for testing node.js modules that interface with external web services. Inspired by [thegreatape's fakeweb][1].
+HTTP & HTTPS request interceptor that allows to define which fixture (JSON object) to return for each request, inspired by [jQuery.fixture][3], [thegreatape/fakeweb][1] and [ppcano/fixtures][2].
 
 # Installation
 
