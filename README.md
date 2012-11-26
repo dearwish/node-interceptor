@@ -1,5 +1,15 @@
 Simple HTTP request mocking/interception for testing node.js modules that interface with external web services. Inspired by [thegreatape's fakeweb][1].
 
+# Installation
+
+	git clone git://github.com/dearwish/node-interceptor.git
+	cd node-interceptor
+	npm install
+
+# Testing
+
+	npm test
+
 # Examples
 
 Catch requests to test.com with uri "/foo":
@@ -37,16 +47,20 @@ You can match request properties with regular expressions:
 You can also provide the list of headers to the interceptor and they will be deep compared with the actual request headers:
 
     https.register_intercept({
-        uri: '/foo', 
+	headers: {'Content-Type': 'application/json'},
+	uri: '/foo', 
         host: 'test.com',
         body: 'I'm the mocked-out body!'
     })
 
-    https.request({uri: "/foo", host: "test.com"}, function(response){
+    https.request({
+    	headers: {'Content-Type': 'application/json'},
+	uri: "/foo",
+	host: "test.com" }, function(response){
         // ...
     })
 
-Unregister rules like as following:
+Unregister rules as following:
 
     http.register_intercept({uri: '/page3', body: 'intercepted body'})
     // ...
@@ -55,8 +69,6 @@ Unregister rules like as following:
 Clear the list of registered intercept rules:
 
     http.clear_intercepts()
-
-
 
 Return custom HTTP headers to your response:
 
@@ -73,4 +85,4 @@ node-interceptor also provides a nodeunit test case that resets the uri intercep
 
 # License
 
-*MIT*
+MIT
