@@ -13,14 +13,14 @@
     "url": "https://github.com/dearwish/node-interceptor.git"
   },
   "dependencies": {
-    "deep-equal": "latest",
+    "deep-equal": "*",
     "nodeunit": ">=0.5.1"
   },
   "author": {
-    "name" : "David Roberin",
-    "email" : "davewish@gmail.com"
+    "name": "David Roberin",
+    "email": "davewish@gmail.com"
   },
   "_id": "node-interceptor@0.0.1",
-  "_from": "fakeweb"
+  "_from": "node-interceptor"
 }
  
