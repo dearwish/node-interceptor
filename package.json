@@ -1,6 +1,6 @@
 {
   "name": "node-interceptor",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "HTTP & HTTPS request interceptor that allows to define which fixture (JSON object) to return, inspired by jQuery.fixture, thegreatape/fakeweb and ppcano/fixtures.",
   "keywords": [
     "testing",
