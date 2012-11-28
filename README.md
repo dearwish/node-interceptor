@@ -1,4 +1,4 @@
-HTTP & HTTPS request interceptor that allows to define which fixture (JSON object) to return for each request, inspired by [jQuery.fixture][3], [thegreatape/fakeweb][1] and [ppcano/fixtures][2].
+HTTP & HTTPS request interceptor. Allows to define which fixture (JSON object) to return for each request, inspired by [jQuery.fixture][3], [thegreatape/fakeweb][1] and [ppcano/fixtures][2].
 
 # Installation
 
@@ -13,85 +13,191 @@ HTTP & HTTPS request interceptor that allows to define which fixture (JSON objec
 
 # Examples
 
-Catch requests to test.com with uri "/foo":
+## 1. Registers a list of interception rules to spoof <code>HTTPS</code> requests to [Facebook Graph API][graphapi]:
 
-    var interceptor = require('interceptor'),
-        http = require('http'),
-        https = require('https');
+### This example is using the node-fixtures module for reading JSON objects from &lt;your-app&gt;/test/fixtures/*.js or *.json.
 
-    http.register_intercept({
-        uri: '/foo', 
-        host: 'test.com',
-        body: 'I am the mocked-out body!'
-    })
+#### Using <i>registerAll</i> which accepts an <code>Array</code> of interception rules and registers them one by one.
 
-    http.request({uri: "/foo", host: "test.com"}, function(response){
-        // ...
-    })
+        // Setup the <b>Interceptor</b> on HTTP and HTTPS protocols. Returns the interceptor class.
+        var interceptor = require('node-interceptor'),
+            fixtures = interceptor.fixtures,
+            https = require('https');
 
-HTTPS interceptors are registered in the same way:
+        https.Interceptor.registerAll([{ 
 
-    https.register_intercept({
-        uri: '/foo', 
-        host: 'test.com',
-        body: 'I am the mocked-out body!'
-    })
+#### /* Mandatory */
 
-    https.request({uri: "/foo", host: "test.com"}, function(response){
-        // ...
-    })
+            // properties checked to qualify a request for interception
+            test: {
+                // uri can be a string or regular expression
+                uri: '/' + process.env.FACEBOOK_APP_ID,
+                host: 'graph.facebook.com'
+            },
 
-You can match request properties with regular expressions:
+#### /* Optional (with defaults) */
 
-    http.register_intercept({uri: /page\d+/, body: 'intercepted body'})
+            // request property names to ignore
+            ignored: ["headers"],
 
-You can also provide the list of headers to the interceptor and they will be deep compared with the actual request headers:
+            // response properties to be returned
+            response: {
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(fixtures.app),
+                statusCode: 200
+            }}, {
 
-    https.register_intercept({
-	headers: {'Content-Type': 'application/json'},
-	uri: '/foo', 
-        host: 'test.com',
-        body: 'I am the mocked-out body!'
-    })
+#### Using regular expression for URI matching:
 
-    https.request({
-    	headers: {'Content-Type': 'application/json'},
-	uri: "/foo",
-	host: "test.com" }, function(response){
-        // ...
-    })
+            test: {
+                // uri can be a regular expression (starts with "/me" in this case)
+                uri: /^\/me/,
+                host: 'graph.facebook.com'
+            },
+            response: {
+                body: JSON.stringify(fixtures.me)
+            }}, {
 
-Unregister rules as following:
+#### Using plain text as output body:
 
-    http.register_intercept({uri: '/page3', body: 'intercepted body'})
-    // ...
-    http.unregister_intercept({uri: '/page3', body: 'intercepted body'})
+            test: {
+                uri: '/you',
+                host: 'graph.facebook.com'
+            },
+            response: {
+                headers: {'Content-Type': 'text/plain'},
+                body: 'Unknown API call attempt!'
+                statusCode: 404
+            }
+        }]);
 
-Clear the list of registered intercept rules:
+#### Using <i>```register```</i> to register a single interception rule.
 
-    http.clear_intercepts()
+        // This time an HTTP request
+        var http = require('http');
 
-Return custom HTTP headers to your response:
+        http.Interceptor.register({
+            test: {
+                uri: '/me/friends',
+                host: 'graph.facebook.com'
+            },
 
-    http.register_intercept({
-        uri: '/foo', 
-        host: 'test.com',
-        headers: {'Content-Type': 'application/json'},
-        body: 'I am the mocked-out body!'
-    })
+            ignored: ["headers"],
 
-node-interceptor also provides a nodeunit test case that resets the uri intercept list in between tests. See ```tests/suits/testcase.js``` for an example.
+            response: {
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(fixtures.friends),
+                statusCode: 200
+            }
+        });
 
-# Future enhancements
+#### Using <i>```unregister```</i> to unregister a single interception rule.
 
-1. Add Connect-like url mapping (i.e. "/users/:id/edit").
-2. Add fixtures integration - the body messages will be read from .js or .json file that reside in app fixtures directory. Inspired by [ppcano's fixtures][2].
+        http.Interceptor.unregister({
+            // The test is required and it should match the registration rule.test
+            test: {
+                uri: '/me',
+                host: 'graph.facebook.com'
+            }
+        });
+
+#### Using <i>```unregisterAll```</i> or <i>```clear```</i> to unregister all interception rules.
+
+        http.Interceptor.unregisterAll();
+
+        // OR
+
+        http.Interceptor.clear();
+
+#### Providing a list of headers that will be compared using [```deep-equal```][deq] with the actual request headers.
+
+        rule: {
+            test: {
+                headers: {'Accept': '*/*', 'Content-Type': 'application/json'}
+                uri: '/me/friends',
+                host: 'graph.facebook.com'
+            },
+         ...
+
+#### Providing a list of custom headers that will be sent to the response.
+
+        rule: {
+            response: {
+                headers: {
+                    'Set-Cookie': 'AuthSessId=41D3D0110BA61CB171B345F147C089BD; path=/',
+                    'Content-Type': 'application/json'
+                }
+                uri: /^\/dialog\/oauth/,
+                host: 'www.facebook.com'
+            },
+         ...
+
+## 2. Sets defaults for all Interceptor instances
+
+### Default values defined in Interceptor are:
+
+        {
+            response: {
+                headers: {'Content-Type': 'application/json'},
+                statusCode: 200,
+                body: ''
+            },
+            ignored: ["headers"]
+        };
+
+### API to override default values
+
+#### Using <i>```getDefaults```</i> and <i>```setDefaults```</i> functions:
+
+        var defaults = Interceptor.getDefaults();
+        defaults.ignored = ["sweeties"];
+        Interceptor.setDefaults(defaults);
+
+#### Using <i>```addDefaults```</i> to add more defaults to existing ones (defaults with the same name will be replaced):
+
+        Interceptor.addDefaults({
+            response: {
+                headers: {'Content-Type': 'text/html', 'Accept': "*/*"},
+                statusCode: 204
+            },
+            ignored: ["headers", "footers"]
+        });
+
+
+### node-interceptor also provides a nodeunit test case that resets the uri intercept list in between tests. See ```tests/suits/testcase.js``` for an example.
+
+# Miscellaneous
+
+## Change log
+
+### Version 0.0.2
+
+- Added Interceptor class
+- Both http and https have their own instance of Interceptor 
+- Added status code to response
+- Added ```defaults``` configuration as static + API to modify them 
+- Some bug fixes
+
+### Version 0.0.1
+
+- Initial version - forked from [node-fakeweb][1]
+- Added HTTPS support
+- Integrated with fixtures (using [node-fixtures][fixtures] module)
+- Some bug fixes
+
+## Future enhancements
+
+1. Add Connect-like uri patterns mapping (i.e. "/users/:id/edit"). Currently it can be done using the regular expressions only.
+2. Add fixtures integration - the response messages will be read from .js or .json file that reside in application fixtures directory. Inspired by [ppcano's fixtures][2].
 3. Add dynamic fixtures similar to [jQuery.fixture][3].
 
-# License
+## License
 
 MIT
 
 [1]: https://github.com/thegreatape/node-fakeweb
 [2]: https://github.com/ppcano/fixtures
 [3]: http://javascriptmvc.com/docs.html#!jQuery.fixture
+[graphapi]: https://developers.facebook.com/docs/reference/api/
+[fixtures]: https://github.com/dearwish/node-fixtures
+[deq]: https://github.com/substack/node-deep-equal
