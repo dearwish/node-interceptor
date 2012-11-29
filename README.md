@@ -67,7 +67,7 @@ HTTP & HTTPS request interceptor. Allows to define which fixture (JSON object) t
         },
         response: {
             headers: {'Content-Type': 'text/plain'},
-            body: 'Unknown API call attempt!'
+            body: 'Unknown API call attempt!',
             statusCode: 404
         }
     }]);
@@ -194,6 +194,9 @@ HTTP & HTTPS request interceptor. Allows to define which fixture (JSON object) t
 1. Add Connect-like uri patterns mapping (i.e. "/users/:id/edit"). Currently it can be done using the regular expressions only.
 2. Add fixtures integration - the response messages will be read from .js or .json file that reside in application fixtures directory. Inspired by [ppcano's fixtures][2].
 3. Add dynamic fixtures similar to [jQuery.fixture][3].
+4. Add configuration on initialization
+- to enable control over setup of interceptor on different protocols
+- to give the ability not to initialize the fixtures
 
 ## License
 

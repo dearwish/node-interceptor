@@ -30,3 +30,4 @@ util.inherits(testCase, nodeunit.testCase);
 
 module.exports.testCase = testCase;
 module.exports.Interceptor = Interceptor;
+module.exports.fixtures = require('node-fixtures');
