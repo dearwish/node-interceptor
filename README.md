@@ -168,7 +168,7 @@ HTTP & HTTPS request interceptor. Allows to define which fixture (JSON object) t
         ignored: ["headers", "footers"]
     });
 
-### node-interceptor also provides a nodeunit test case that resets the uri intercept list in between tests. See ```tests/suits/testcase.js``` for an example.
+#### node-interceptor also provides a nodeunit test case that resets the uri intercept list in between tests. See ```tests/suits/testcase.js``` for an example.
 
 # Miscellaneous
 
@@ -195,8 +195,8 @@ HTTP & HTTPS request interceptor. Allows to define which fixture (JSON object) t
 2. Add fixtures integration - the response messages will be read from .js or .json file that reside in application fixtures directory. Inspired by [ppcano's fixtures][2].
 3. Add dynamic fixtures similar to [jQuery.fixture][3].
 4. Add configuration on initialization
-- to enable control over setup of interceptor on different protocols
-- to give the ability not to initialize the fixtures
+    - to enable control over setup of interceptor on different protocols
+    - to give the ability not to initialize the fixtures
 
 ## License
 
